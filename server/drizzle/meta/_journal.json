@@ -8,6 +8,13 @@
       "when": 1774587970072,
       "tag": "0000_living_miek",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774617944072,
+      "tag": "0001_heavy_tana_nile",
+      "breakpoints": true
     }
   ]
 }
