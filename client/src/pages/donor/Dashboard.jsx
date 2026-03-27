@@ -338,28 +338,28 @@ function Dashboard() {
                                 {!isEditingProfile ? (
                                     <div className="profile-details" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Full Name</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.name}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Full Name</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.name}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Role</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.role}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Role</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.role}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Phone Number</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.phone}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Phone Number</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.phone}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Address</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.address}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Address</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.address}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Email Address</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.email}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Email Address</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.email}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Password</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>••••••••</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Password</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>••••••••</p>
                                         </div>
                                     </div>
                                 ) : (
@@ -370,7 +370,7 @@ function Dashboard() {
                                         </div>
                                         <div className="form-group">
                                             <label>Role</label>
-                                            <input type="text" name="role" value={profileData.role} readOnly style={{backgroundColor: '#f1f5f9', cursor: 'not-allowed', color: '#64748b'}} />
+                                            <input type="text" name="role" value={profileData.role} readOnly style={{backgroundColor: '#C4DAD2', cursor: 'not-allowed', color: '#6A9C89'}} />
                                         </div>
                                         <div className="form-group">
                                             <label>Phone Number</label>

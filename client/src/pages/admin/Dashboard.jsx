@@ -334,55 +334,55 @@ function AdminDashboard() {
                                 {!isEditingProfile ? (
                                     <div className="profile-details" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Full Name</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.name}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Full Name</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.name}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Role</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.role}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Role</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.role}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Phone Number</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.phone}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Phone Number</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.phone}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Address</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.address}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Address</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.address}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Email Address</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>{profileData.email}</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Email Address</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>{profileData.email}</p>
                                         </div>
                                         <div className="detail-group">
-                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#64748b', marginBottom: '0.3rem', fontWeight: '600' }}>Password</label>
-                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#1e293b' }}>••••••••</p>
+                                            <label style={{ display: 'block', fontSize: '0.9rem', color: '#6A9C89', marginBottom: '0.3rem', fontWeight: '600' }}>Password</label>
+                                            <p style={{ margin: 0, fontSize: '1.1rem', color: '#16423C' }}>••••••••</p>
                                         </div>
                                     </div>
                                 ) : (
                                     <form className="dashboard-form">
                                         <div className="form-group" style={{ marginBottom: '1rem' }}>
                                             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Full Name</label>
-                                            <input type="text" name="name" value={profileData.name} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                                            <input type="text" name="name" value={profileData.name} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #C4DAD2' }} />
                                         </div>
                                         <div className="form-group" style={{ marginBottom: '1rem' }}>
                                             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Role</label>
-                                            <input type="text" name="role" value={profileData.role} readOnly style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', backgroundColor: '#f1f5f9', cursor: 'not-allowed', color: '#64748b' }} />
+                                            <input type="text" name="role" value={profileData.role} readOnly style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #C4DAD2', backgroundColor: '#C4DAD2', cursor: 'not-allowed', color: '#6A9C89' }} />
                                         </div>
                                         <div className="form-group" style={{ marginBottom: '1rem' }}>
                                             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Phone Number</label>
-                                            <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                                            <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #C4DAD2' }} />
                                         </div>
                                         <div className="form-group" style={{ marginBottom: '1rem' }}>
                                             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Address</label>
-                                            <textarea name="address" value={profileData.address} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0', minHeight: '100px' }}></textarea>
+                                            <textarea name="address" value={profileData.address} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #C4DAD2', minHeight: '100px' }}></textarea>
                                         </div>
                                         <div className="form-group" style={{ marginBottom: '1rem' }}>
                                             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Email Address</label>
-                                            <input type="email" name="email" value={profileData.email} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                                            <input type="email" name="email" value={profileData.email} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #C4DAD2' }} />
                                         </div>
                                         <div className="form-group" style={{ marginBottom: '1rem' }}>
                                             <label style={{ display: 'block', marginBottom: '0.5rem' }}>Password</label>
-                                            <input type="password" name="password" value={profileData.password} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #e2e8f0' }} />
+                                            <input type="password" name="password" value={profileData.password} onChange={handleProfileChange} style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '1px solid #C4DAD2' }} />
                                         </div>
                                         <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
                                             <button type="button" className="action-btn primary" onClick={handleProfileSave}>Save Changes</button>

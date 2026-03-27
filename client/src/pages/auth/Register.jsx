@@ -77,7 +77,7 @@ const Register = () => {
                 />
 
                 {/* Radio buttons for Role */}
-                <div className="radio-group" style={{ display: 'flex', gap: '2rem', padding: '0.5rem 0.2rem', color: '#475569' }}>
+                <div className="radio-group" style={{ display: 'flex', gap: '2rem', padding: '0.5rem 0.2rem', color: '#16423C' }}>
                     <span style={{ fontWeight: 600 }}>I am a:</span>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                         <input
