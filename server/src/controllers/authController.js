@@ -7,7 +7,8 @@ import { eq } from "drizzle-orm";
 export const register = async (req, res) => {
   try {
     const { name, email, password, role, phone, address } = req.body;
-
+    //console.log(name);
+    
     // Check if user already exists
     const existing = await db.select().from(users).where(eq(users.email, email));
     if (existing.length > 0) {
