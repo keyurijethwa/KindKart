@@ -50,3 +50,7 @@
   border-color: var(--secondary);
   background: #fff;
 }
+
+.role-option.role-error {
+  border-color: #fca5a5;
+}
