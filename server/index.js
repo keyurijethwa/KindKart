@@ -6,7 +6,7 @@ import authRoutes from './src/routes/authRoutes.js';
 import protectedRoutes from './src/routes/protectedRoutes.js';
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = 8000;
 
 app.use(cors());
 app.use(express.json());

@@ -1,6 +1,7 @@
 import {useState} from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -10,9 +11,9 @@ const Register = () => {
         phone: "",
         address: "",
         email: "",
-        password: "",
-        confirmPassword: "",
+        password: ""
     });
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -22,20 +23,31 @@ const Register = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        setError("");
         
         if (!formData.role) {
-            alert("Please tell us if you are a Donor or an NGO.");
+            setError("Please tell us if you are a Donor or an NGO.");
             return;
         }
-        
-        // Mock auth redirect
-        if (formData.role === "Donor") {
-            navigate("/donor/dashboard");
-        } else if (formData.role === "NGO") {
-            navigate("/ngo/dashboard");
+
+        try {
+            const res = await axios.post("http://localhost:8000/api/auth/register", formData);
+            const user = res.data.user;
+
+            if (user.role === "Donor") {
+                navigate("/donor/dashboard");
+            } else if (user.role === "NGO") {
+                navigate("/ngo/dashboard");
+            } else if (user.role === "Admin") {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || "Registration failed. Please try again.");
+            console.error("Registration error:", err);
         }
     };
 
@@ -43,6 +55,7 @@ const Register = () => {
         <div className="login-container">
             <form onSubmit={handleSubmit} style={{ margin: '2rem 0' }}>
                 <h2>Register</h2>
+                {error && <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}
                 <input 
                     type="text" 
                     name="name" 
@@ -78,6 +91,18 @@ const Register = () => {
                             style={{ width: 'auto', padding: 0 }}
                         />
                         NGO
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                        <input 
+                            type="radio" 
+                            name="role" 
+                            value="Admin" 
+                            checked={formData.role === "Admin"} 
+                            onChange={handleChange} 
+                            required 
+                            style={{ width: 'auto', padding: 0 }}
+                        />
+                        Admin
                     </label>
                 </div>
 
@@ -119,4 +144,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default Register;

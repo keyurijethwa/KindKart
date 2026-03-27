@@ -1,14 +1,15 @@
 import {useState} from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
-        password: "",
-        role: "Donor" // Default for testing
+        password: ""
     });
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -18,15 +19,36 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        setError("");
         
-        // Mock login and redirect
-        if (formData.role === "Donor") {
-            navigate("/donor/dashboard");
-        } else {
-            navigate("/ngo/dashboard");
+        try {
+            const res = await axios.post("http://localhost:8000/api/auth/login", {
+                email: formData.email,
+                password: formData.password
+            });
+            console.log("Hello");
+            
+            const user = res.data.user;
+            console.log(user);
+            
+            // Store token and user data
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("user", JSON.stringify(user));
+
+            if (user.role === "DONOR") {
+                navigate("/donor/dashboard");
+            } else if (user.role === "NGO") {
+                navigate("/ngo/dashboard");
+            } else if (user.role === "Admin") {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || "Login failed. Please try again.");
+            console.error("Login error:", err);
         }
     };
 
@@ -34,6 +56,7 @@ const Login = () => {
         <div className="login-container">
             <form onSubmit={handleSubmit}>
                 <h2>Login</h2>
+                {error && <div style={{ color: "red", marginBottom: "1rem" }}>{error}</div>}
                 <input 
                     type="email" 
                     name="email" 
@@ -50,29 +73,6 @@ const Login = () => {
                     onChange={handleChange} 
                     required 
                 />
-                
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem', color: '#475569' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-                        <input 
-                            type="radio" 
-                            name="role" 
-                            value="Donor" 
-                            checked={formData.role === "Donor"} 
-                            onChange={handleChange} 
-                        />
-                        Donor
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
-                        <input 
-                            type="radio" 
-                            name="role" 
-                            value="NGO" 
-                            checked={formData.role === "NGO"} 
-                            onChange={handleChange} 
-                        />
-                        NGO
-                    </label>
-                </div>
 
                 <button type="submit">Login</button>
             </form>
