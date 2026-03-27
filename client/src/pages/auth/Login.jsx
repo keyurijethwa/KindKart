@@ -38,13 +38,13 @@ const Login = () => {
             localStorage.setItem("user", JSON.stringify(user));
 
             if (user.role === "DONOR") {
-                navigate("/donor/dashboard");
+                navigate("/donor/dashboard", { replace: true });
             } else if (user.role === "NGO") {
-                navigate("/ngo/dashboard");
-            } else if (user.role === "Admin") {
-                navigate("/admin/dashboard");
+                navigate("/ngo/dashboard", { replace: true });
+            } else if (user.role === "ADMIN") {
+                navigate("/admin/dashboard", { replace: true });
             } else {
-                navigate("/");
+                navigate("/", { replace: true });
             }
         } catch (err) {
             setError(err.response?.data?.message || "Login failed. Please try again.");

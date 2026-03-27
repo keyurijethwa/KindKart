@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
@@ -20,8 +21,57 @@ function AdminDashboard() {
         setProfileData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleProfileSave = () => {
-        setIsEditingProfile(false);
+    const fetchProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8000/api/profile", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const userData = res.data.user;
+            setProfileData(prev => ({ 
+                ...prev, 
+                name: userData.name, 
+                email: userData.email, 
+                role: userData.role, 
+                phone: userData.phone || "", 
+                address: userData.address || "" 
+            }));
+        } catch(e) {
+            console.error("Failed to fetch profile", e);
+        }
+    };
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    const handleProfileSave = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.put("http://localhost:8000/api/profile", {
+                name: profileData.name,
+                phone: profileData.phone,
+                address: profileData.address
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert("Profile updated successfully!");
+            setIsEditingProfile(false);
+        } catch(e) {
+            console.error(e);
+            alert("Failed to update profile");
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.post("http://localhost:8000/api/auth/logout");
+        } catch (e) {
+            console.error(e);
+        }
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login", { replace: true });
     };
 
     // Mock statistics
@@ -90,10 +140,10 @@ function AdminDashboard() {
                     <div className="user-info">
                         <div className="avatar admin-avatar">A</div>
                         <div className="user-details">
-                            <p className="user-name">System Admin</p>
-                            <p className="user-role">Superuser</p>
+                            <p className="user-name">{profileData.name}</p>
+                            <p className="user-role">{profileData.role}</p>
                         </div>
-                        <button className="logout-btn" title="Logout" onClick={() => navigate('/landing')}>
+                        <button className="logout-btn" title="Logout" onClick={handleLogout}>
                             ⎋
                         </button>
                     </div>
@@ -102,7 +152,7 @@ function AdminDashboard() {
 
             <main className="main-content">
                 <header className="dashboard-header">
-                    <h1>Admin Dashboard ⚡</h1>
+                    <h1>Welcome back, {profileData.name} ⚡</h1>
                     <p className="subtitle">Manage users, oversee operations, and handle systemic requests.</p>
                 </header>
 

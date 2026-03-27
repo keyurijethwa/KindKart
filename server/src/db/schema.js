@@ -82,3 +82,15 @@ export const ratings = pgTable("ratings", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// NGO Needs (Requests by NGOs)
+export const ngoRequests = pgTable("ngo_requests", {
+  id: serial("id").primaryKey(),
+  ngoId: integer("ngo_id").references(() => users.id).notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  urgency: text("urgency"),
+  quantity: text("quantity"),
+  status: donationStatusEnum("status").default("PENDING"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+

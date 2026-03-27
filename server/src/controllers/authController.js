@@ -56,3 +56,9 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: "Server error.", error: error.message });
   }
 };
+
+export const logout = (req, res) => {
+  // Since we use JWT in local storage, actual logout happens client-side.
+  // We provide this endpoint to fulfill the typical logout API contract cleanly.
+  return res.status(200).json({ message: "Logout successful." });
+};

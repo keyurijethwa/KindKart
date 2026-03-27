@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 
 import authRoutes from './src/routes/authRoutes.js';
-import protectedRoutes from './src/routes/protectedRoutes.js';
+import apiRoutes from './src/routes/apiRoutes.js';
 
 const app = express();
 const port = 8000;
@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/protected', protectedRoutes);
+app.use('/api', apiRoutes);
 
 
 

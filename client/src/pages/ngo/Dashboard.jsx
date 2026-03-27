@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
@@ -20,14 +21,76 @@ function NgoDashboard() {
         setProfileData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleProfileSave = () => {
-        setIsEditingProfile(false);
+    const fetchProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8000/api/profile", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const userData = res.data.user;
+            setProfileData(prev => ({ 
+                ...prev, 
+                name: userData.name, 
+                email: userData.email, 
+                role: userData.role, 
+                phone: userData.phone || "", 
+                address: userData.address || "" 
+            }));
+        } catch(e) {
+            console.error("Failed to fetch profile", e);
+        }
     };
 
-    const [incomingRequests, setIncomingRequests] = useState([
-        { id: 1, title: "50 Meals donation offer", donor: "John Doe", foodType: "Cooked Meals", status: "Pending" },
-        { id: 2, title: "Canned Goods", donor: "Local Supermarket", foodType: "Non-perishables", status: "Pending" }
-    ]);
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    const handleProfileSave = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.put("http://localhost:8000/api/profile", {
+                name: profileData.name,
+                phone: profileData.phone,
+                address: profileData.address
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert("Profile updated successfully!");
+            setIsEditingProfile(false);
+        } catch(e) {
+            console.error(e);
+            alert("Failed to update profile");
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.post("http://localhost:8000/api/auth/logout");
+        } catch (e) {
+            console.error(e);
+        }
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login", { replace: true });
+    };
+
+    const [incomingRequests, setIncomingRequests] = useState([]);
+
+    useEffect(() => {
+        if (activeTab === 'requests') {
+            fetchDonorRequests();
+        }
+    }, [activeTab]);
+
+    const fetchDonorRequests = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8000/api/ngo/donor-requests", { headers: { Authorization: `Bearer ${token}` } });
+            setIncomingRequests(res.data.requests || []);
+        } catch (e) {
+            console.error("Failed to fetch donor requests", e);
+        }
+    };
 
     const handleAcceptRequest = (id) => {
         setIncomingRequests(incomingRequests.filter(req => req.id !== id));
@@ -70,10 +133,10 @@ function NgoDashboard() {
                     <div className="user-info">
                         <div className="avatar ngo-avatar">H</div>
                         <div className="user-details">
-                            <p className="user-name">Hope Foundation</p>
-                            <p className="user-role">Registered NGO</p>
+                            <p className="user-name">{profileData.name}</p>
+                            <p className="user-role">{profileData.role}</p>
                         </div>
-                        <button className="logout-btn" title="Logout" onClick={() => navigate('/landing')}>
+                        <button className="logout-btn" title="Logout" onClick={handleLogout}>
                             ⎋
                         </button>
                     </div>
@@ -82,7 +145,7 @@ function NgoDashboard() {
 
             <main className="main-content">
                 <header className="dashboard-header">
-                    <h1>Welcome back, Hope Foundation! 🌟</h1>
+                    <h1>Welcome back, {profileData.name}! 🌟</h1>
                     <p className="subtitle">Track your campaigns and managing incoming distributions.</p>
                 </header>
 
@@ -239,10 +302,13 @@ function NgoDashboard() {
                                 <div className="card-list">
                                     {incomingRequests.map(req => (
                                         <div className="item-card" key={req.id}>
-                                            <h4>{req.title}</h4>
-                                            <p><strong>Donor:</strong> {req.donor}</p>
-                                            <p><strong>Food Type:</strong> {req.foodType}</p>
-                                            <p><strong>Status:</strong> <span className="status pending">{req.status}</span></p>
+                                            <h4>Donation Offer: {req.foodType}</h4>
+                                            <p><strong>Donor:</strong> {req.donorName || "Unknown Donor"}</p>
+                                            <p><strong>Quantity:</strong> {req.quantity}</p>
+                                            <p><strong>Description:</strong> {req.description}</p>
+                                            <p><strong>Location:</strong> {req.location}</p>
+                                            <p><strong>Expiry:</strong> {req.expiryTime ? new Date(req.expiryTime).toLocaleString() : 'N/A'}</p>
+                                            <p><strong>Status:</strong> <span className={`status ${req.status.toLowerCase() == 'pending' ? 'pending' : 'completed'}`}>{req.status}</span></p>
                                             <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.5rem' }}>
                                                 <button 
                                                     className="action-btn primary small" 

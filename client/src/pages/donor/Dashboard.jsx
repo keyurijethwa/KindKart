@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Dashboard.css";
 
 function Dashboard() {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("dashboard");
     const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [donationForm, setDonationForm] = useState({
+        foodType: "",
+        quantity: "",
+        description: "",
+        expiryTime: "",
+        location: ""
+    });
+    const [myDonations, setMyDonations] = useState([]);
+    const [ngoRequests, setNgoRequests] = useState([]);
     const [profileData, setProfileData] = useState({
         name: "Donor User",
         role: "Food Donor",
@@ -20,8 +30,107 @@ function Dashboard() {
         setProfileData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleProfileSave = () => {
-        setIsEditingProfile(false);
+    const fetchProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8000/api/profile", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const userData = res.data.user;
+            setProfileData(prev => ({ 
+                ...prev, 
+                name: userData.name, 
+                email: userData.email, 
+                role: userData.role, 
+                phone: userData.phone || "", 
+                address: userData.address || "" 
+            }));
+        } catch(e) {
+            console.error("Failed to fetch profile", e);
+        }
+    };
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    useEffect(() => {
+        if (activeTab === 'mydonations') {
+            fetchMyDonations();
+        } else if (activeTab === 'requests') {
+            fetchNgoRequests();
+        }
+    }, [activeTab]);
+
+    const fetchMyDonations = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8000/api/donor/my-donations", { headers: { Authorization: `Bearer ${token}` } });
+            setMyDonations(res.data.donations || []);
+        } catch (e) {
+            console.error("Failed to fetch donations", e);
+        }
+    };
+
+    const fetchNgoRequests = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const res = await axios.get("http://localhost:8000/api/donor/ngo-requests", { headers: { Authorization: `Bearer ${token}` } });
+            setNgoRequests(res.data.requests || []);
+        } catch (e) {
+            console.error("Failed to fetch NGO requests", e);
+        }
+    };
+
+    const handleProfileSave = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.put("http://localhost:8000/api/profile", {
+                name: profileData.name,
+                phone: profileData.phone,
+                address: profileData.address
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            alert("Profile updated successfully!");
+            setIsEditingProfile(false);
+        } catch(e) {
+            console.error(e);
+            alert("Failed to update profile");
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.post("http://localhost:8000/api/auth/logout");
+        } catch (e) {
+            console.error(e);
+        }
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login", { replace: true });
+    };
+
+    const handleDonationChange = (e) => {
+        setDonationForm({...donationForm, [e.target.name]: e.target.value});
+    };
+
+    const handleDonationSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem("token");
+            await axios.post(
+                "http://localhost:8000/api/donor/request",
+                donationForm,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            alert("Donation successfully sent to all NGOs!");
+            setDonationForm({ foodType: "", quantity: "", description: "", expiryTime: "", location: "" });
+            setActiveTab("mydonations");
+        } catch (error) {
+            alert(error.response?.data?.message || "Failed to create donation");
+            console.error(error);
+        }
     };
 
     return (
@@ -57,10 +166,10 @@ function Dashboard() {
                     <div className="user-info">
                         <div className="avatar">D</div>
                         <div className="user-details">
-                            <p className="user-name">Donor User</p>
-                            <p className="user-role">Food Donor</p>
+                            <p className="user-name">{profileData.name}</p>
+                            <p className="user-role">{profileData.role}</p>
                         </div>
-                        <button className="logout-btn" title="Logout" onClick={() => navigate('/landing')}>
+                        <button className="logout-btn" title="Logout" onClick={handleLogout}>
                             ⎋
                         </button>
                     </div>
@@ -69,7 +178,7 @@ function Dashboard() {
 
             <main className="main-content">
                 <header className="dashboard-header">
-                    <h1>Welcome back, Donor! 👋</h1>
+                    <h1>Welcome back, {profileData.name}! 👋</h1>
                     <p className="subtitle">Here's an overview of your impact today.</p>
                 </header>
 
@@ -143,28 +252,28 @@ function Dashboard() {
                         <div className="tab-content fade-in">
                             <div className="form-card">
                                 <h2>Create Donation</h2>
-                                <form className="dashboard-form">
+                                <form className="dashboard-form" onSubmit={handleDonationSubmit}>
                                     <div className="form-group">
                                         <label>Food Type</label>
-                                        <input type="text" placeholder="e.g. Cooked Rice, Canned Beans" />
+                                        <input type="text" name="foodType" placeholder="e.g. Cooked Rice, Canned Beans" value={donationForm.foodType} onChange={handleDonationChange} required />
                                     </div>
                                     <div className="form-group">
                                         <label>Quantity</label>
-                                        <input type="text" placeholder="e.g. 50 servings, 20 kg" />
+                                        <input type="text" name="quantity" placeholder="e.g. 50 servings, 20 kg" value={donationForm.quantity} onChange={handleDonationChange} required />
                                     </div>
                                     <div className="form-group">
                                         <label>Description</label>
-                                        <textarea placeholder="Brief description of the food items"></textarea>
+                                        <textarea name="description" placeholder="Brief description of the food items" value={donationForm.description} onChange={handleDonationChange}></textarea>
                                     </div>
                                     <div className="form-group">
                                         <label>Expiry Time</label>
-                                        <input type="datetime-local" />
+                                        <input type="datetime-local" name="expiryTime" value={donationForm.expiryTime} onChange={handleDonationChange} required />
                                     </div>
                                     <div className="form-group">
                                         <label>Location</label>
-                                        <input type="text" placeholder="Pickup location address" />
+                                        <input type="text" name="location" placeholder="Pickup location address" value={donationForm.location} onChange={handleDonationChange} required />
                                     </div>
-                                    <button type="button" className="action-btn primary">Submit Donation</button>
+                                    <button type="submit" className="action-btn primary">Submit Donation</button>
                                 </form>
                             </div>
                         </div>
@@ -173,20 +282,19 @@ function Dashboard() {
                         <div className="tab-content fade-in">
                             <h2>My Donations</h2>
                             <div className="card-list">
-                                <div className="item-card">
-                                    <h4>50 Meals to Hope NGO</h4>
-                                    <p><strong>Food Type:</strong> Mixed Meals</p>
-                                    <p><strong>Quantity:</strong> 50 servings</p>
-                                    <p><strong>Status:</strong> <span className="status completed">Delivered</span></p>
-                                    <p><strong>Date:</strong> Oct 24, 2023</p>
-                                </div>
-                                <div className="item-card">
-                                    <h4>Winter Clothes Bundle</h4>
-                                    <p><strong>Type:</strong> Clothing</p>
-                                    <p><strong>Quantity:</strong> 3 boxes</p>
-                                    <p><strong>Status:</strong> <span className="status pending">Pending Pickup</span></p>
-                                    <p><strong>Date:</strong> Oct 26, 2023</p>
-                                </div>
+                                {myDonations.length === 0 ? (
+                                    <p className="placeholder-text" style={{marginTop: '1rem'}}>No donations made yet.</p>
+                                ) : (
+                                    myDonations.map(don => (
+                                        <div className="item-card" key={don.id}>
+                                            <h4>{don.foodType}</h4>
+                                            <p><strong>Quantity:</strong> {don.quantity}</p>
+                                            <p><strong>Location:</strong> {don.location}</p>
+                                            <p><strong>Status:</strong> <span className={`status completed`}>{don.status}</span></p>
+                                            <p><strong>Expiry:</strong> {new Date(don.expiryTime).toLocaleString()}</p>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     )}
@@ -194,18 +302,20 @@ function Dashboard() {
                         <div className="tab-content fade-in">
                             <h2>NGO Requests</h2>
                             <div className="card-list">
-                                <div className="item-card">
-                                    <h4>Urgent: 100 Meals needed</h4>
-                                    <p><strong>NGO:</strong> Sunshine Foundation</p>
-                                    <p><strong>Location:</strong> Downtown Shelter</p>
-                                    <button className="action-btn primary small">Fulfill Request</button>
-                                </div>
-                                <div className="item-card">
-                                    <h4>Canned Food Drive</h4>
-                                    <p><strong>NGO:</strong> Community Helpers</p>
-                                    <p><strong>Location:</strong> Westside Center</p>
-                                    <button className="action-btn primary small">Fulfill Request</button>
-                                </div>
+                                {ngoRequests.length === 0 ? (
+                                    <p className="placeholder-text" style={{marginTop: '1rem'}}>No requests from NGOs yet.</p>
+                                ) : (
+                                    ngoRequests.map(req => (
+                                        <div className="item-card" key={req.id}>
+                                            <h4>{req.title}</h4>
+                                            <p><strong>NGO:</strong> {req.ngoName || "Unknown NGO"}</p>
+                                            <p><strong>Description:</strong> {req.description}</p>
+                                            <p><strong>Quantity Needed:</strong> {req.quantity}</p>
+                                            <p><strong>Urgency:</strong> {req.urgency}</p>
+                                            <button className="action-btn primary small" style={{marginTop:'0.5rem'}}>Fulfill Request</button>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     )}
