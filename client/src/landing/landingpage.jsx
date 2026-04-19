@@ -7,7 +7,7 @@ const LandingPage = () => {
 
     return (
         <div className="landing-container">
-            {/* Navbar */}
+            {/* Navbar  1 */}
             <nav style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 padding: '1rem 8%', background: '#fff',
